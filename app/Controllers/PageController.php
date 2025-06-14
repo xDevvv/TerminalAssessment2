@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\BooksModel;
 use App\Models\MembersModel;
+use App\Models\UserModel;
 use App\Models\BorrowedBooksModel;
 use App\Models\ReturnedBooksModel;
 
@@ -143,5 +144,69 @@ class PageController extends BaseController
             $data['title_page'] = 'Overdue Books';
             return view('layout/book/overdueBooks', $data);
         }
+    }
+
+    // User Dashboard
+
+    public function dashboard() {
+
+        if(!session()->get('name')) {
+            return redirect()->to('/');
+        }
+        
+        $borrowedBooksModel = new BorrowedBooksModel();
+        $booksModel = new BooksModel();
+
+        $data['bookCount'] = count($booksModel->findAll());
+        $data['borrowedBooksCount'] = count($borrowedBooksModel->where('user_id', session()->get('id'))->findAll());
+        $data['title_page'] = 'Dashboard';
+        return view('layout/user/dashboard', $data);
+        
+    }
+
+    public function profile() {
+
+        
+
+        if(!session()->get('name')) {
+            return redirect()->to('/');
+        }
+
+        $userModel = new UserModel();
+
+        $data['user'] = $userModel->where('username', session()->get('name'))->first();
+
+        $data['title_page'] = 'Profile';
+        return view('layout/user/profile', $data);
+    }
+
+
+    public function userborrowedBooks() {
+
+        if(!session()->get('name')) {
+            return redirect()->to('/');
+        }
+
+        $borrowedBooksModel = new BorrowedBooksModel();
+
+        $data['borrowedBooks'] = $borrowedBooksModel->where('user_id', session()->get('id'))->findAll();
+
+        $data['title_page'] = 'Borrowed Books';
+        return view('layout/user/borrowed_books', $data);
+    }
+    
+    public function availableBooks() {
+
+        if(!session()->get('name')) {
+            return redirect()->to('/');
+        }
+
+        $bookList = new BooksModel();
+
+        $data['books'] = $bookList->findAll();
+        $data['title_page'] = 'Books';
+
+        $data['title_page'] = 'Available Books';
+        return view('layout/user/books', $data);
     }
 }

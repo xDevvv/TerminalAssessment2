@@ -37,6 +37,20 @@
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+        <select style="text-align: center;" name="role" class="form-select mb-3">
+            <option value="" hidden> -- Select Role -- </option>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+        </select>
+        <?php if (session()->getFlashdata('errors')): ?>
+            <?php foreach (session()->getFlashdata('errors') as $error => $value): ?>
+                <?php if ($error == 'role') : ?>
+                    <div class="text-danger text-sm error">
+                        <?= esc($value) ?>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
         <div class="form-floating mb-3">
             <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
             <label for="floatingPassword">Password</label>

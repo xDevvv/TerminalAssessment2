@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\AdminModel;
 use App\Models\MembersModel;
 use App\Models\BooksModel;
+use App\Models\UserModel;
 
 
 class Form extends BaseController
@@ -19,6 +20,7 @@ class Form extends BaseController
     public function register()
     {   
         $adminModel = new AdminModel();
+        $userModel = new UserModel();
 
         // Load the validation service
         $validation = \Config\Services::validation();
@@ -30,6 +32,7 @@ class Form extends BaseController
         $rules = [
             'username' => 'required',
             'email' => 'required|valid_email',
+            'role' => 'required',
             'password' => 'required|min_length[5]|max_length[20]',
             'ConfirmPassword' => 'required|min_length[5]|max_length[20]|matches[password]'
         ];
@@ -42,13 +45,26 @@ class Form extends BaseController
         }
         else 
         {
-            $data = array(
+            if($this->request->getPost('role') == 'admin') {
+                $data = array(
                 'username' => esc($this->request->getPost('username')),
                 'email' => esc($this->request->getPost('email')),
                 'pwd' => esc($this->request->getPost('password')),
-            );
-    
-            $adminModel->insert($data);
+                );
+        
+                $adminModel->insert($data);
+            }
+
+            if($this->request->getPost('role') == 'user') {
+                $data = array(
+                'username' => esc($this->request->getPost('username')),
+                'email' => esc($this->request->getPost('email')),
+                'pwd' => esc($this->request->getPost('password')),
+                );
+        
+                $userModel->insert($data);
+            }
+            
             return redirect()->to('register')->with('confirm', 'Registration Successful!');
         }
         
@@ -67,6 +83,7 @@ class Form extends BaseController
 
         $rules = [
             'username' => 'required',
+            'role' => 'required',
             'password' => 'required',
         ];
 
@@ -78,36 +95,65 @@ class Form extends BaseController
         }
         else 
         {
-            $userModel = new AdminModel();
+            $adminModel = new AdminModel();
+            $userModel = new UserModel();
 
             $data = array(
                 'username' => esc($this->request->getPost('username')),
                 'pwd' => esc($this->request->getPost('password')),
             );
 
-            
-            $result = $userModel->where('username', $data['username'])->first();
+            if($this->request->getPost('role') == 'admin') {
+                $result = $adminModel->where('username', $data['username'])->first();
 
-            // Check if the user exists in the database
-            if(!$result) {
+                // Check if the user exists in the database
+                if(!$result) {
 
-                return redirect()->to('/')->with('errors', array('error' => 'Invalid Password or Username'));
-            }
-            else {
-
-                if($data['pwd'] == $result['pwd']) {
-
-                    // Set & Create session data that will access in Home & About page
-                    $session = session();
-                    $session->set('name', $data['username']);
-                    
-                    return redirect()->to('/home');
-                }
-                else {
                     return redirect()->to('/')->with('errors', array('error' => 'Invalid Password or Username'));
                 }
+                else {
+
+                    if($data['pwd'] == $result['pwd']) {
+
+                        // Set & Create session data that will access in Home & About page
+                        $session = session();
+                        
+                        $session->set('name', $data['username']);
+                        
+                        return redirect()->to('/home');
+                    }
+                    else {
+                        return redirect()->to('/')->with('errors', array('error' => 'Invalid Password or Username'));
+                    }
+                }
             }
-            
+
+            if($this->request->getPost('role') == 'user') {
+
+                $result = $userModel->where('username', $data['username'])->first();
+
+                // Check if the user exists in the database
+                if(!$result) {
+
+                    return redirect()->to('/')->with('errors', array('error' => 'Invalid Password or Username'));
+                }
+                else {
+
+                    if($data['pwd'] == $result['pwd']) {
+
+                        // Set & Create session data that will access in Home & About page
+                        $session = session();
+
+                        $session->set('id', $result['user_id']);
+                        $session->set('name', $result['username']);
+                        
+                        return redirect()->to('/user');
+                    }
+                    else {
+                        return redirect()->to('/')->with('errors', array('error' => 'Invalid Password or Username'));
+                    }
+                }
+            }
         }
     }
 

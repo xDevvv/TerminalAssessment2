@@ -105,4 +105,39 @@ class BooksController extends BaseController
 
         return redirect()->to('/borrowed')->with('confirm', 'Successfully Returned!');
     }
+
+
+
+    // User Functionality
+
+    public function userBorrowedBooks($id) {
+        if(!session()->get('name')) {
+            return redirect()->to('/');
+        }
+
+        $borrowedBooksModel = new BorrowedBooksModel();
+
+        $db = \Config\Database::connect();
+        try {
+            
+
+            $date = date('Y-m-d');
+            $returnDate = date("Y-m-d", strtotime("+7 days"));
+
+            $data = array(
+                'book_id' => $id,
+                'user_id' => session()->get('id'),
+                'borrowed_date' => $date,
+                'book_return' => $returnDate
+            );
+
+            $borrowedBooksModel->insert($data);
+            return redirect()->to('/available')->with('confirm', 'Successfully Borrow!');
+            
+        } catch (\Exception $e) {
+            return redirect()->to('/available')->with('confirm', 'Invalid Member ID!');
+        }
+    }
+
+    
 }
