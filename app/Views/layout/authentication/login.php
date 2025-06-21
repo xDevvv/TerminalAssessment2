@@ -7,6 +7,15 @@
             <?= form_open('login_user') ?>
             <?= csrf_field(); ?>
             <div class="container-xlg mx-5 input-container">
+                <?php if (session()->getFlashdata('errors')): ?>
+                    <?php foreach (session()->getFlashdata('errors') as $error => $value): ?>
+                        <?php if ($error == 'error') : ?>
+                            <div class="text-danger text-sm error d-flex justify-content-center">
+                                <?= esc($value) ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="floatingInput" placeholder="Username" name="username">
                     <label for="floatingInput">Username</label>

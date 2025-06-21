@@ -17,7 +17,7 @@
                 <?php foreach ($overdueBooks as $overdueBook) : ?>
                     <tr>
                         <td class="book-id"><?= $overdueBook['book_id'] ?></td>
-                        <td class="member-id"><?= $overdueBook['member_id'] ?></td>
+                        <td class="member-id"><?= ($overdueBook['member_id']) ? $overdueBook['member_id'] : $overdueBook['user_id'] ?></td>
                         <td class="borrowed-date"><?= $overdueBook['borrowed_date'] ?></td>
                         <td class="book-return"><?= $overdueBook['book_return'] ?></td>
                     </tr>

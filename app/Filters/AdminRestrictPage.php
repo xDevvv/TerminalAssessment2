@@ -6,7 +6,7 @@ use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
-class Auth implements FilterInterface
+class AdminRestrictPage implements FilterInterface
 {
     /**
      * Do whatever processing this filter needs to do.
@@ -25,7 +25,15 @@ class Auth implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        //
+        if(!session()->get('isLoggedIn')) 
+        {
+            return redirect()->to('/')->with('errors', array('error' => 'You must be logged in!'));
+        }
+
+        if(session()->get('role') == 'admin') 
+        {
+            return redirect()->to('/home');
+        }
     }
 
     /**

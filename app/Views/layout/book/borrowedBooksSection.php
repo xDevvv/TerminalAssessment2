@@ -22,7 +22,7 @@
                         <tr>
                             <td class="borrow-id"><?= $borrowedBook['borrow_id'] ?></td>
                             <td class="book-id"><?= $borrowedBook['book_id'] ?></td>
-                            <td class="member-id"><?= $borrowedBook['member_id'] ?></td>
+                            <td class="member-id"><?= ($borrowedBook['member_id']) ? $borrowedBook['member_id'] : $borrowedBook['user_id'] ?></td>
                             <td class="borrowed-date"><?= $borrowedBook['borrowed_date'] ?></td>
                             <td class="return-date"><?= $borrowedBook['book_return'] ?></td>
                             <th>

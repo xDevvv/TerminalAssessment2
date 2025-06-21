@@ -34,7 +34,7 @@
                             </li>
                         </ul>
                         <form class="d-flex" role="search">
-                            <input class="form-control me-2 search-input" type="search" placeholder="Search" aria-label="Search" id="search">
+                            <input class="form-control me-2 search-input" type="search" placeholder="Search" aria-label="Search" id="search" style="background-color: transparent; border-color: white;">
                             <a href="/" class="btn btn-danger" role="button">Logout</a>
                         </form>
                     </div>

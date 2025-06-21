@@ -19,9 +19,10 @@ class PageController extends BaseController
 
     public function login() {
         
+        session()->destroy();
+
         $bookList = new BooksModel();
 
-        $data['books'] = $bookList->findAll();
         $data['title_page'] = "Login";
 
         session()->remove('name');
@@ -30,7 +31,7 @@ class PageController extends BaseController
 
     public function register() {
 
-        session()->remove('name');
+        session()->destroy();
 
         $data['title_page'] = "Register";
         return view('layout/authentication/register', $data);
@@ -38,121 +39,80 @@ class PageController extends BaseController
 
     public function home()
     {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-            $name = session()->get('name');
+        $name = session()->get('name');
 
-            $bookList = new BooksModel();
-            $data['title_page'] = 'Home Page';
-            $data['books'] = $bookList->findAll();
-            return view('layout/home', $data);
-        }
+        $bookList = new BooksModel();
+        $data['title_page'] = 'Home Page';
+        $data['books'] = $bookList->findAll();
+        return view('layout/home', $data);
     }
 
     public function about()
     {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-
-            $data['title_page'] = 'About Page';
-            return view('layout/about', $data);
-        }
+        $data['title_page'] = 'About Page';
+        return view('layout/about', $data);
     }
 
     public function showMembers() {
+        
+        $memberList = new MembersModel();
 
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-            
-            $memberList = new MembersModel();
-
-            $data['members'] = $memberList->findAll();
-            $data['title_page'] = 'Member Page';
-            
-            return view('layout/member/members', $data);
-        }
+        $data['members'] = $memberList->findAll();
+        $data['title_page'] = 'Member Page';
+        
+        return view('layout/member/members', $data);
     }
 
     
-    public function showBooks() {
+    public function showBooks() 
+    {
+        $name = session()->get('name');
 
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-            $name = session()->get('name');
+        $bookList = new BooksModel();
 
-            $bookList = new BooksModel();
-
-            $data['books'] = $bookList->findAll();
-            $data['title_page'] = 'Books';
-            
-            return view('layout/books', $data);
-        }
+        $data['books'] = $bookList->findAll();
+        $data['title_page'] = 'Books';
+        
+        return view('layout/books', $data);
+        
     }
 
     public function showBorrowedBooks() {
 
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-            $name = session()->get('name');
+        $name = session()->get('name');
 
-            $borrowedBooksModel = new BorrowedBooksModel();
+        $borrowedBooksModel = new BorrowedBooksModel();
 
-            $data['borrowedBooks'] = $borrowedBooksModel->findAll();
-            $data['title_page'] = 'Book Logs';
-            return view('layout/book/borrowedBooksSection', $data);
-        }
+        $data['borrowedBooks'] = $borrowedBooksModel->findAll();
+        $data['title_page'] = 'Book Logs';
+        return view('layout/book/borrowedBooksSection', $data);
+        
     }
 
     public function showReturnedBooks() {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-            $name = session()->get('name');
+        $returnedBooksModel = new ReturnedBooksModel();
 
-            $returnedBooksModel = new ReturnedBooksModel();
+        $data['returnedBooks'] = $returnedBooksModel->findAll();
+        $data['title_page'] = 'Book Logs';
 
-            $data['returnedBooks'] = $returnedBooksModel->findAll();
-            $data['title_page'] = 'Book Logs';
-
-            return view('layout/book/returnedBooksSection', $data);
-        }
+        return view('layout/book/returnedBooksSection', $data);
+        
     }
 
     public function showOverdueBooks() {
 
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-        else {
-            $name = session()->get('name');
-
-            $db = \Config\Database::connect();
-            
-            $results = $db->query("SELECT * FROM borrowbookrecords WHERE book_return < CURDATE()")->getResultArray();
-            $data['overdueBooks'] = $results;
-            $data['title_page'] = 'Overdue Books';
-            return view('layout/book/overdueBooks', $data);
-        }
+        $db = \Config\Database::connect();
+        
+        $results = $db->query("SELECT * FROM borrowbookrecords WHERE book_return < CURDATE()")->getResultArray();
+        $data['overdueBooks'] = $results;
+        $data['title_page'] = 'Overdue Books';
+        return view('layout/book/overdueBooks', $data);
+        
     }
 
     // User Dashboard
 
     public function dashboard() {
-
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
         
         $borrowedBooksModel = new BorrowedBooksModel();
         $booksModel = new BooksModel();
@@ -166,12 +126,6 @@ class PageController extends BaseController
 
     public function profile() {
 
-        
-
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-
         $userModel = new UserModel();
 
         $data['user'] = $userModel->where('username', session()->get('name'))->first();
@@ -183,10 +137,6 @@ class PageController extends BaseController
 
     public function userborrowedBooks() {
 
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-
         $borrowedBooksModel = new BorrowedBooksModel();
 
         $data['borrowedBooks'] = $borrowedBooksModel->where('user_id', session()->get('id'))->findAll();
@@ -196,10 +146,6 @@ class PageController extends BaseController
     }
     
     public function availableBooks() {
-
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
 
         $bookList = new BooksModel();
 

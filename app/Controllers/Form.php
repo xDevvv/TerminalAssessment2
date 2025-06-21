@@ -37,7 +37,6 @@ class Form extends BaseController
             'ConfirmPassword' => 'required|min_length[5]|max_length[20]|matches[password]'
         ];
 
-
         $data = $this->request->getPost(array_keys($rules));
 
         if (!$this->validateData($data, $rules)) {
@@ -100,25 +99,29 @@ class Form extends BaseController
 
             $data = array(
                 'username' => esc($this->request->getPost('username')),
+                'role' => esc($this->request->getPost('role')),
                 'pwd' => esc($this->request->getPost('password')),
             );
 
-            if($this->request->getPost('role') == 'admin') {
+            if($this->request->getPost('role') == 'admin') 
+            {
                 $result = $adminModel->where('username', $data['username'])->first();
 
                 // Check if the user exists in the database
-                if(!$result) {
-
+                if(!$result) 
+                {
                     return redirect()->to('/')->with('errors', array('error' => 'Invalid Password or Username'));
                 }
                 else {
-
                     if($data['pwd'] == $result['pwd']) {
 
                         // Set & Create session data that will access in Home & About page
                         $session = session();
-                        
-                        $session->set('name', $data['username']);
+
+                        $session->set('id', $result['user_id']);
+                        $session->set('name', $result['username']);
+                        $session->set('role', $data['role']);
+                        $session->set('isLoggedIn', true);
                         
                         return redirect()->to('/home');
                     }
@@ -146,6 +149,8 @@ class Form extends BaseController
 
                         $session->set('id', $result['user_id']);
                         $session->set('name', $result['username']);
+                        $session->set('role', $data['role']);
+                        $session->set('isLoggedIn', true);
                         
                         return redirect()->to('/user');
                     }
@@ -160,10 +165,6 @@ class Form extends BaseController
     // Add Members Function
 
     public function addMembers() {
-
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
 
         $membersModel = new MembersModel();
 
@@ -186,10 +187,6 @@ class Form extends BaseController
 
     public function updateMembers($id) {
 
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
-
         $membersModel = new MembersModel();
 
         $data = array(
@@ -209,10 +206,6 @@ class Form extends BaseController
     // Add Books Function
 
     public function addBooks() {
-
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
 
         $booksModel = new BooksModel();
 
@@ -239,10 +232,6 @@ class Form extends BaseController
 
 
     public function updateBook($id) {
-
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
 
         $booksModel = new BooksModel();
 

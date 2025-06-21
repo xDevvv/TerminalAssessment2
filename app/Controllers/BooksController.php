@@ -12,9 +12,9 @@ class BooksController extends BaseController
 {
     public function deleteBook($id)
     {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
+        // if(!session()->get('name')) {
+        //     return redirect()->to('/');
+        // }
         
         $bookList = new BooksModel();
 
@@ -25,7 +25,6 @@ class BooksController extends BaseController
 
     public function editBook($id)
     {
-
         $bookList = new BooksModel();
 
         $data['books'] = $bookList->where('book_id', $id)->first();
@@ -38,9 +37,9 @@ class BooksController extends BaseController
 
     public function setBorrowBookInfomraton($id)
     {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
+        // if(!session()->get('name')) {
+        //     return redirect()->to('/');
+        // }
 
         $bookList = new BooksModel();
 
@@ -52,9 +51,9 @@ class BooksController extends BaseController
 
     public function borrowBook()
     {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
+        // if(!session()->get('name')) {
+        //     return redirect()->to('/');
+        // }
 
         $borrowedBooksModel = new BorrowedBooksModel();
 
@@ -81,9 +80,10 @@ class BooksController extends BaseController
 
     public function returnBook($id)
     {   
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
+        // if(!session()->get('name')) {
+        //     return redirect()->to('/');
+        // }
+
         $db = \Config\Database::connect();
 
 
@@ -111,9 +111,9 @@ class BooksController extends BaseController
     // User Functionality
 
     public function userBorrowedBooks($id) {
-        if(!session()->get('name')) {
-            return redirect()->to('/');
-        }
+        // if(!session()->get('name')) {
+        //     return redirect()->to('/');
+        // }
 
         $borrowedBooksModel = new BorrowedBooksModel();
 

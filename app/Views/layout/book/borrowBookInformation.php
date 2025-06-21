@@ -10,6 +10,7 @@
                 <div class="card-body">
                     <div class="row">
                         <form action="/book/borrow/" method="POST">
+                            <?php csrf_field () ?>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label fw-bold">Title</label>
                                 <input type="text" class="form-control" name="title" value="<?= $books['title'] ?>" readonly>
